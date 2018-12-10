@@ -2,8 +2,7 @@ import numpy
 import pandas as pd  
 import math as m
 
-from pyti import catch_errors
-from pyti.function_helper import fill_for_noncomputable_vals
+
 from six.moves import range
 
 #from https://github.com/kylejusticemagnuson/pyti/blob/master/pyti/weighted_moving_average.py
