@@ -33,7 +33,7 @@ def GARCH(df,n=15):
 #          ‘ARX’ and ‘HARX’
         model = arch_model(history, mean='Constant', vol='GARCH', p=1, q=3) #1, and 3 according to the paper 
         # fit model
-        model_fit = model.fit()
+        model_fit = model.fit(disp="off")
         # forecast the next day variance 
         yhat = model_fit.forecast(horizon=1)
         # append the observations 
