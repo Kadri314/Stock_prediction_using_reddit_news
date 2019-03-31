@@ -7,55 +7,55 @@ import math as m
 from six.moves import range
 
 
-# #calculate GARCH model 
-# from random import gauss
-# from random import seed
-# from matplotlib import pyplot
-# from arch import arch_model
-# def GARCH(df,n=15):
-#     #For now it works only for n=15
-# #     data=df["askclose"].values
-#     data=(100*df["Close"].pct_change()).values # this will set the first value into nan
-#     #initialize the first 15 var and mean 
-# #     GARCH_vars= [data[0:i].var() for i in range(1,16)]
-# #     GARCH_means=[data[0:i].mean() for i in range(1,16)]
+#calculate GARCH model 
+from random import gauss
+from random import seed
+from matplotlib import pyplot
+from arch import arch_model
+def GARCH(df,n=15):
+    #For now it works only for n=15
+#     data=df["askclose"].values
+    data=(100*df["Close"].pct_change()).values # this will set the first value into nan
+    #initialize the first 15 var and mean 
+#     GARCH_vars= [data[0:i].var() for i in range(1,16)]
+#     GARCH_means=[data[0:i].mean() for i in range(1,16)]
 
-#     GARCH_vars= [numpy.nan for i in range(1,16)] # set first 15 values into nan 
-#     GARCH_means=[numpy.nan for i in range(1,16)] # set first 15 values into nan
-# #     i=0
-# #     j=15
-#     i=1 # start from 1 since the percentage change didn't account for the first input 
-#     j=16
-#     # we need to forcast len(data)-15 observations
-#     for k in range (15,len(data)):
-#         history=data[i:j]
-#         # define model
-# #          ‘ARX’ and ‘HARX’
-#         model = arch_model(history, mean='Constant', vol='GARCH', p=1, q=3) #1, and 3 according to the paper 
-#         # fit model
-#         model_fit = model.fit(disp="off")
-#         # forecast the next day variance 
-#         yhat = model_fit.forecast(horizon=1)
-#         # append the observations 
-#         GARCH_vars.append(yhat.variance.iloc[yhat.variance.shape[0]-1].values[0])
-#         GARCH_means.append(yhat.mean.iloc[yhat.mean.shape[0]-1].values[0])
-#         #update indices
-#         i+=1
-#         j+=1
+    GARCH_vars= [numpy.nan for i in range(1,16)] # set first 15 values into nan 
+    GARCH_means=[numpy.nan for i in range(1,16)] # set first 15 values into nan
+#     i=0
+#     j=15
+    i=1 # start from 1 since the percentage change didn't account for the first input 
+    j=16
+    # we need to forcast len(data)-15 observations
+    for k in range (15,len(data)):
+        history=data[i:j]
+        # define model
+#          ‘ARX’ and ‘HARX’
+        model = arch_model(history, mean='Constant', vol='GARCH', p=1, q=3) #1, and 3 according to the paper 
+        # fit model
+        model_fit = model.fit(disp="off")
+        # forecast the next day variance 
+        yhat = model_fit.forecast(horizon=1)
+        # append the observations 
+        GARCH_vars.append(yhat.variance.iloc[yhat.variance.shape[0]-1].values[0])
+        GARCH_means.append(yhat.mean.iloc[yhat.mean.shape[0]-1].values[0])
+        #update indices
+        i+=1
+        j+=1
     
-#     #calculate the actual variance
-# #     var= [data[i-16:i].var() for i in range(17,len(data)+1)]
-# #     print(len(GARCH_vars[15:-1]),len(var))
-# #     pyplot.plot(range(0,84),GARCH_vars[15:-1], c='b')
-# #     pyplot.plot(range(0,84),var, c= 'g')
-# #     pyplot.show()
-# #     print(np.mean(var))
-# #     print(mean_absolute_error(var,GARCH_vars[15:-1]))
+    #calculate the actual variance
+#     var= [data[i-16:i].var() for i in range(17,len(data)+1)]
+#     print(len(GARCH_vars[15:-1]),len(var))
+#     pyplot.plot(range(0,84),GARCH_vars[15:-1], c='b')
+#     pyplot.plot(range(0,84),var, c= 'g')
+#     pyplot.show()
+#     print(np.mean(var))
+#     print(mean_absolute_error(var,GARCH_vars[15:-1]))
 
-# #     appending the results into the data frame 
-#     df["GARCH_tmw_vars"]=GARCH_vars
-#     df["GARCH_tmw_means"]=GARCH_means
-#     return df
+#     appending the results into the data frame 
+    df["GARCH_tmw_vars"]=GARCH_vars
+    df["GARCH_tmw_means"]=GARCH_means
+    return df
 
 #slope calculation
 from sklearn.linear_model import LinearRegression
