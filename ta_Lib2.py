@@ -20,14 +20,14 @@ def GARCH(df,n=15):
 #     GARCH_vars= [data[0:i].var() for i in range(1,16)]
 #     GARCH_means=[data[0:i].mean() for i in range(1,16)]
 
-    GARCH_vars= [numpy.nan for i in range(1,16)] # set first 15 values into nan 
-    GARCH_means=[numpy.nan for i in range(1,16)] # set first 15 values into nan
+    GARCH_vars= [numpy.nan for i in range(1,n+1)] # set first 15 values into nan 
+    GARCH_means=[numpy.nan for i in range(1,n+1)] # set first 15 values into nan
 #     i=0
 #     j=15
     i=1 # start from 1 since the percentage change didn't account for the first input 
-    j=16
+    j=n+1
     # we need to forcast len(data)-15 observations
-    for k in range (15,len(data)):
+    for k in range (n,len(data)):
         history=data[i:j]
         # define model
 #          ‘ARX’ and ‘HARX’
