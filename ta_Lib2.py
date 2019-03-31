@@ -53,8 +53,8 @@ def GARCH(df,n=15):
 #     print(mean_absolute_error(var,GARCH_vars[15:-1]))
 
 #     appending the results into the data frame 
-    df["GARCH_tmw_vars"]=GARCH_vars
-    df["GARCH_tmw_means"]=GARCH_means
+    df["GARCH_tmw_vars_"+str(n)]=GARCH_vars
+    df["GARCH_tmw_means_"+str(n)]=GARCH_means
     return df
 
 #slope calculation
