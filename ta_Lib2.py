@@ -216,7 +216,7 @@ def MA(df, n):
 
 #Exponential Moving Average  
 def EMA(df, n):  
-    EMA = pd.Series(pd.ewma(df['Close'], span = n, min_periods = n - 1), name = 'EMA_' + str(n))  
+    EMA=pd.Series(df['Close'].ewm(span = n, min_periods = n-1 ).mean(), name = 'EMA_' + str(n)) 
     df = df.join(EMA)  
     return df
 
@@ -243,7 +243,8 @@ def ATR(df, n):
         TR_l.append(TR)  
         i = i + 1  
     TR_s = pd.Series(TR_l)  
-    ATR = pd.Series(pd.ewma(TR_s, span = n, min_periods = n), name = 'ATR_' + str(n))  
+    ATR= pd.Series(TR_s.ewm(span = n, min_periods = n).mean(), name = 'ATR_' + str(n))  
+    
     df = df.join(ATR)  
     return df
 
@@ -333,9 +334,9 @@ def STO(df, nK, nD,  nS=1):
     return df  
 #Trix  
 def TRIX(df, n):  
-    EX1 = pd.ewma(df['Close'], span = n, min_periods = n - 1)  
-    EX2 = pd.ewma(EX1, span = n, min_periods = n - 1)  
-    EX3 = pd.ewma(EX2, span = n, min_periods = n - 1)  
+    EX1 = df['Close'].ewm(span = n, min_periods = n - 1).mean()
+    EX2 = EX1.ewm(span = n, min_periods = n - 1).mean()
+    EX3 = EX2.ewm(span = n, min_periods = n - 1).mean()  
     i = 0  
     ROC_l = [0]  
     while i + 1 <= df.index[-1]:  
@@ -370,21 +371,22 @@ def ADX(df, n, n_ADX):
         TR_l.append(TR)  
         i = i + 1  
     TR_s = pd.Series(TR_l)  
-    ATR = pd.Series(pd.ewma(TR_s, span = n, min_periods = n))  
+    ATR = pd.Series(TR_s.ewm(span = n, min_periods = n).mean())  
     UpI = pd.Series(UpI)  
     DoI = pd.Series(DoI)  
-    PosDI = pd.Series(pd.ewma(UpI, span = n, min_periods = n - 1) / ATR)  
-    NegDI = pd.Series(pd.ewma(DoI, span = n, min_periods = n - 1) / ATR)  
-    ADX = pd.Series(pd.ewma(abs(PosDI - NegDI) / (PosDI + NegDI), span = n_ADX, min_periods = n_ADX - 1), name = 'ADX_' + str(n) + '_' + str(n_ADX))  
+    PosDI = pd.Series(UpI.ewm(span = n, min_periods = n - 1).mean() / ATR)  
+    NegDI = pd.Series(DoI.ewm(span = n, min_periods = n - 1).mean() / ATR)
+    val=abs(PosDI - NegDI) / (PosDI + NegDI)
+    ADX = pd.Series(val.ewm(span = n_ADX, min_periods = n_ADX - 1).mean(), name = 'ADX_' + str(n) + '_' + str(n_ADX))  
     df = df.join(ADX)  
     return df
 
 #MACD, MACD Signal and MACD difference  
 def MACD(df, n_fast, n_slow):  
-    EMAfast = pd.Series(pd.ewma(df['Close'], span = n_fast, min_periods = n_slow - 1))  
-    EMAslow = pd.Series(pd.ewma(df['Close'], span = n_slow, min_periods = n_slow - 1))  
+    EMAfast = pd.Series(df['Close'].ewm(span = n_fast, min_periods = n_slow - 1).mean())  
+    EMAslow = pd.Series(df['Close'].ewm( span = n_slow, min_periods = n_slow - 1).mean())  
     MACD = pd.Series(EMAfast - EMAslow, name = 'MACD_' + str(n_fast) + '_' + str(n_slow))  
-    MACDsign = pd.Series(pd.ewma(MACD, span = 9, min_periods = 8), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))  
+    MACDsign = pd.Series(MACD.ewm(span = 9, min_periods = 8).mean(), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))  
     MACDdiff = pd.Series(MACD - MACDsign, name = 'MACDdiff_' + str(n_fast) + '_' + str(n_slow))  
     df = df.join(MACD)  
     df = df.join(MACDsign)  
@@ -394,8 +396,8 @@ def MACD(df, n_fast, n_slow):
 #Mass Index  
 def MassI(df):  
     Range = df['High'] - df['Low']  
-    EX1 = pd.ewma(Range, span = 9, min_periods = 8)  
-    EX2 = pd.ewma(EX1, span = 9, min_periods = 8)  
+    EX1 = Range.ewm( span = 9, min_periods = 8).mean()
+    EX2 = EX1.ewm(span = 9, min_periods = 8).mean()
     Mass = EX1 / EX2  
     MassI = pd.Series(pd.rolling_sum(Mass, 25), name = 'Mass Index')  
     df = df.join(MassI)  
@@ -597,10 +599,10 @@ def rsi(df, period=14):
 def TSI(df, r, s):  
     M = pd.Series(df['Close'].diff(1))  
     aM = abs(M)  
-    EMA1 = pd.Series(pd.ewma(M, span = r, min_periods = r - 1))  
-    aEMA1 = pd.Series(pd.ewma(aM, span = r, min_periods = r - 1))  
-    EMA2 = pd.Series(pd.ewma(EMA1, span = s, min_periods = s - 1))  
-    aEMA2 = pd.Series(pd.ewma(aEMA1, span = s, min_periods = s - 1))  
+    EMA1 = pd.Series(M.ewm(span = r, min_periods = r - 1).mean())  
+    aEMA1 = pd.Series(aM.ewm(span = r, min_periods = r - 1).mean())  
+    EMA2 = pd.Series(EMA1.ewm(span = s, min_periods = s - 1).mean())  
+    aEMA2 = pd.Series(aEMA1.ewm(span = s, min_periods = s - 1).mean())  
     TSI = pd.Series(EMA2 / aEMA2, name = 'TSI_' + str(r) + '_' + str(s))  
     df = df.join(TSI)  
     return df
@@ -739,8 +741,9 @@ def COPP(df, n):
     ROC1 = M / N  
     M = df['Close'].diff(int(n * 14 / 10) - 1)  
     N = df['Close'].shift(int(n * 14 / 10) - 1)  
-    ROC2 = M / N  
-    Copp = pd.Series(pd.ewma(ROC1 + ROC2, span = n, min_periods = n), name = 'Copp_' + str(n))  
+    ROC2 = M / N
+    val=ROC1 + ROC2
+    Copp = pd.Series(val.ewm(span = n, min_periods = n).mean(), name = 'Copp_' + str(n))  
     df = df.join(Copp)  
     return df
 
