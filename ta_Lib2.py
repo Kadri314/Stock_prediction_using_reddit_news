@@ -15,7 +15,8 @@ from arch import arch_model
 def GARCH(df,n=15):
     #For now it works only for n=15
 #     data=df["askclose"].values
-    data=(100*df["Close"].pct_change()).values # this will set the first value into nan
+    data=(df["Close"].pct_change()).values # this will set the first value into nan
+    data=numpy.log(1+data) #try log return 
     #initialize the first 15 var and mean 
 #     GARCH_vars= [data[0:i].var() for i in range(1,16)]
 #     GARCH_means=[data[0:i].mean() for i in range(1,16)]
