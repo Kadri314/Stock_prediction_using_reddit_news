@@ -79,6 +79,7 @@ def fourier(prices, periods, method ="difference",to_plot=False):
     #compute the coeffecient of the series 
     detrended = detrender(prices, method)
     for i in range(0, len(periods)):
+        preds=[np.nan for l in range(0,periods[i])]
         coeffs = [np.nan for k in range(0,4*(periods[i]))] # set the first n windows into nan values (note: detrend remove the first row)
         for j in range(periods[i], len(detrended)+1):
             x = np.arange(0,periods[i])
@@ -99,12 +100,16 @@ def fourier(prices, periods, method ="difference",to_plot=False):
                 plt.plot(xt,yt,'r')
                 plt.show()
                 
+            x_pred= np.arange(0,periods[i]+1)
+            y_pred = fseries(x_pred,res[0][0],res[0][1],res[0][2],res[0][3])
+            preds.append(y_pred[-1])
             coeffs = np.append(coeffs, res[0],axis = 0)     
         warnings.filterwarnings('ignore', category= np.VisibleDeprecationWarning)
         coeffs = np.array(coeffs).reshape((len(coeffs)//4,4))
         
         df = pd.DataFrame(coeffs, index=prices.iloc[:].index)
         df.columns =['a0_fourier_'+str(periods[i]),'a1_fourier_'+str(periods[i]),'b1_fourier_'+str(periods[i]),'w_fourier_'+str(periods[i])]
+        df["fourier_preds_"+str(periods[i])]=preds
         df = df.fillna(method='bfill')
         dict[periods[i]] = df
      
@@ -125,6 +130,7 @@ def sine(prices, periods, method ="difference",to_plot=False):
     #compute the coeffecient of the series 
     detrended = detrender(prices, method)
     for i in range(0, len(periods)):
+        preds=[np.nan for l in range(0,periods[i])]
         coeffs = [np.nan for k in range(0,3*(periods[i]))] # set the first n windows into nan values (note: detrend remove the first row)
         for j in range(periods[i], len(detrended)+1):
             x = np.arange(0,periods[i])
@@ -142,13 +148,16 @@ def sine(prices, periods, method ="difference",to_plot=False):
                 yt = sseries(xt,res[0][0],res[0][1],res[0][2])
                 plt.plot(x,y,'b')
                 plt.plot(xt,yt,'r')
-                
                 plt.show()
+            x_pred= np.arange(0,periods[i]+1)
+            y_pred = sseries(x_pred,res[0][0],res[0][1],res[0][2])
+            preds.append(y_pred[-1])
             coeffs = np.append(coeffs, res[0],axis = 0)
         warnings.filterwarnings('ignore', category= np.VisibleDeprecationWarning)
         coeffs = np.array(coeffs).reshape(((len(coeffs)//3,3)))
         df = pd.DataFrame(coeffs, index=prices.iloc[:].index)
         df.columns = ['a0_sine_'+str(periods[i]),'b1_sine_'+str(periods[i]),'w_sine_'+str(periods[i])]
+        df["sine_preds_"+str(periods[i])]=preds
         df = df.fillna(method='bfill')
         dict[periods[i]] = df
      
