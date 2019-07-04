@@ -81,7 +81,7 @@ def fourier(prices, periods, method ="difference",to_plot=False):
     for i in range(0, len(periods)):
         preds=[np.nan for l in range(0,periods[i])]
         coeffs = [np.nan for k in range(0,4*(periods[i]))] # set the first n windows into nan values (note: detrend remove the first row)
-        for j in range(periods[i], len(detrended)+1):
+        for j in range(periods[i], len(detrended)-1):
             x = np.arange(0,periods[i])
             y = detrended.iloc[j-periods[i]:j]
             with warnings.catch_warnings():
@@ -132,7 +132,7 @@ def sine(prices, periods, method ="difference",to_plot=False):
     for i in range(0, len(periods)):
         preds=[np.nan for l in range(0,periods[i])]
         coeffs = [np.nan for k in range(0,3*(periods[i]))] # set the first n windows into nan values (note: detrend remove the first row)
-        for j in range(periods[i], len(detrended)+1):
+        for j in range(periods[i], len(detrended)-1):
             x = np.arange(0,periods[i])
             y = detrended.iloc[j-periods[i]:j]
             with warnings.catch_warnings():
