@@ -198,7 +198,7 @@ def williams_ad(data, high_col='High', low_col='Low', close_col='Close'):
             else:
                 ad = 0.
                                                                                                         
-            data.set_value(index, 'williams_ad', (ad+prev_value))
+            data.at(index, 'williams_ad')=(ad+prev_value)
         
     return data
 
