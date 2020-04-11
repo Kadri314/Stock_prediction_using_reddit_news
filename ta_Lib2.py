@@ -415,7 +415,7 @@ def Vortex(df, n):
     i = 0  
     VM = [0]  
     while i < df.index[-1]:  
-        Range = abs(df.at[i + 1, 'High'] - df.at[i, 'Low]) - abs(df.at[i + 1, 'Low] - df.at[i, 'High])  
+        Range = abs(df.at[i + 1, 'High'] - df.at[i, 'Low']) - abs(df.at[i + 1, 'Low] - df.at[i, 'High])  
         VM.append(Range)  
         i = i + 1  
     VI = pd.Series(pd.rolling_sum(pd.Series(VM), n) / pd.rolling_sum(pd.Series(TR), n), name = 'Vortex_' + str(n))  
