@@ -240,7 +240,7 @@ def ATR(df, n):
     i = 0  
     TR_l = [0]  
     while i < df.index[-1]:  
-        TR = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))  
+        TR = max(df.at[i + 1, 'High'], df.at[i, 'Close']) - min(df.at[i + 1, 'Low'], df.at[i, 'Close'])  
         TR_l.append(TR)  
         i = i + 1  
     TR_s = pd.Series(TR_l)  
@@ -354,8 +354,8 @@ def ADX(df, n, n_ADX):
     UpI = []  
     DoI = []  
     while i + 1 <= df.index[-1]:  
-        UpMove = df.get_value(i + 1, 'High') - df.get_value(i, 'High')  
-        DoMove = df.get_value(i, 'Low') - df.get_value(i + 1, 'Low')  
+        UpMove = df.at[i + 1, 'High'] - df.at[i, 'High']  
+        DoMove = df.at[i, 'Low'] - df.at[i + 1, 'Low']  
         if UpMove > DoMove and UpMove > 0:  
             UpD = UpMove  
         else: UpD = 0  
@@ -368,7 +368,7 @@ def ADX(df, n, n_ADX):
     i = 0  
     TR_l = [0]  
     while i < df.index[-1]:  
-        TR = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))  
+        TR = max(df.at[i + 1, 'High'], df.at[i, 'Close']) - min(df.at[i + 1, 'Low'], df.at[i, 'Close'])  
         TR_l.append(TR)  
         i = i + 1  
     TR_s = pd.Series(TR_l)  
@@ -409,13 +409,13 @@ def Vortex(df, n):
     i = 0  
     TR = [0]  
     while i < df.index[-1]:  
-        Range = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))  
+        Range = max(df.at[i + 1, 'High'], df.at[i, 'Close']) - min(df.at[i + 1, 'Low'], df.at[i, 'Close'])  
         TR.append(Range)  
         i = i + 1  
     i = 0  
     VM = [0]  
     while i < df.index[-1]:  
-        Range = abs(df.get_value(i + 1, 'High') - df.get_value(i, 'Low')) - abs(df.get_value(i + 1, 'Low') - df.get_value(i, 'High'))  
+        Range = abs(df.at[i + 1, 'High'] - df.at[i, 'Low]) - abs(df.at[i + 1, 'Low] - df.at[i, 'High])  
         VM.append(Range)  
         i = i + 1  
     VI = pd.Series(pd.rolling_sum(pd.Series(VM), n) / pd.rolling_sum(pd.Series(TR), n), name = 'Vortex_' + str(n))  
@@ -668,7 +668,7 @@ def MFI(df, n):
     PosMF = [0]  
     while i < df.index[-1]:  
         if PP[i + 1] > PP[i]:  
-            PosMF.append(PP[i + 1] * df.get_value(i + 1, 'Volume'))  
+            PosMF.append(PP[i + 1] * df.at[i + 1, 'Volume'])  
         else:  
             PosMF.append(0)  
         i = i + 1  
@@ -684,12 +684,12 @@ def OBV(df, n):
     i = 0  
     OBV = [0]  
     while i < df.index[-1]:  
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') > 0:  
-            OBV.append(df.get_value(i + 1, 'Volume'))  
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') == 0:  
+        if df.at[i + 1, 'Close'] - df.at[i, 'Close'] > 0:  
+            OBV.append(df.at[i + 1, 'Volume'])  
+        if df.at[i + 1, 'Close'] - df.at[i, 'Close'] == 0:  
             OBV.append(0)  
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') < 0:  
-            OBV.append(-df.get_value(i + 1, 'Volume'))  
+        if df.at[i + 1, 'Close'] - df.at[i, 'Close'] < 0:  
+            OBV.append(-df.at[i + 1, 'Volume'])  
         i = i + 1  
     OBV = pd.Series(OBV)  
     OBV_ma = pd.Series(pd.rolling_mean(OBV, n), name = 'OBV_' + str(n))  
@@ -764,9 +764,9 @@ def ULTOSC(df):
     TR_l = [0]  
     BP_l = [0]  
     while i < df.index[-1]:  
-        TR = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))  
+        TR = max(df.at[i + 1, 'High'], df.at[i, 'Close']) - min(df.at[i + 1, 'Low'], df.at[i, 'Close'])  
         TR_l.append(TR)  
-        BP = df.get_value(i + 1, 'Close') - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))  
+        BP = df.at[i + 1, 'Close'] - min(df.at[i + 1, 'Low'], df.at[i, 'Close'])  
         BP_l.append(BP)  
         i = i + 1  
     UltO = pd.Series((4 * pd.rolling_sum(pd.Series(BP_l), 7) / pd.rolling_sum(pd.Series(TR_l), 7)) + (2 * pd.rolling_sum(pd.Series(BP_l), 14) / pd.rolling_sum(pd.Series(TR_l), 14)) + (pd.rolling_sum(pd.Series(BP_l), 28) / pd.rolling_sum(pd.Series(TR_l), 28)), name = 'Ultimate_Osc')  
@@ -832,4 +832,4 @@ def wr(df, lbp=14, fillna=False):
         wr = wr.replace([np.inf, -np.inf], np.nan).fillna(-50)
     wr= pd.Series(wr, name='wr_'+str(lbp))
     df=df.join(wr)
-    return df
+    return df                                                                                      
